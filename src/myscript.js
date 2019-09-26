@@ -39,7 +39,6 @@ const takeSnapShot = () => {
 
   //Criando o JPG
   var dataURI = canvas.toDataURL('image/jpeg'); //O resultado é um BASE64 de uma imagem.
-  document.querySelector("#base_img").value = dataURI;
 
   download(dataURI); //Gerar Imagem e Salvar Caminho no Banco
 }
