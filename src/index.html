@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script src="https://unpkg.com/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handtrackjs/dist/handtrack.min.js"> </script>
   <style>
     body {
       font-family: sans-serif;
@@ -78,22 +80,27 @@
 
 <body>
 
-  <div class="container">
-    <h2>Sorria, seu sorriso é lindo ;p</h2>
-    <div class="panel panel-default">
-      <div class="area">
-        <video autoplay="true" id="webCamera">
-        </video>
+<div class="container">
+  <h2>Sorria, seu sorriso é lindo ;p</h2>
+  <div class="panel panel-default">
+    <div class="area">
+      <video autoplay playsinline style=" -moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        display: none;
+        " id="webCamera"></video>
+      <canvas id="output"></canvas>
 
-        <input type="text" id="base_img" name="base_img" />
-        <button type="button" onclick="takeSnapShot()">Tirar foto</button>
+      <input type="text" id="base_img" name="base_img" />
+      <button type="button" onclick="takeSnapShot()">Tirar foto</button>
 
-        <img id="imagemConvertida" />
-        <p id="caminhoImagem" class="caminho-imagem"><a href="" target="_blank"></a></p>
-        <script src="myscript.js"></script>
-      </div>
+      <img id="imagemConvertida" />
+      <p id="caminhoImagem" class="caminho-imagem"><a href="" target="_blank"></a></p>
+      <script src="myscript.js"></script>
     </div>
   </div>
+</div>
 
 </body>
 
