@@ -1,5 +1,5 @@
 const videoWidth = 500;
-const videoHeight = 500;
+const videoHeight = 380;
 const video_test = document.getElementById('webCamera');
 video_test.width = videoWidth;
 video_test.height = videoHeight;
@@ -24,14 +24,6 @@ async function setupWebcam() {
   });
 }
 
-
-function drawPoint(ctx, y, x, r, color, part) {
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, 10 * Math.PI);
-  ctx.fillStyle = color;
-  // ctx.fillText(part, x, y, 500);
-  ctx.fill();
-}
 const takeSnapShot = () => {
   //Captura elemento de vídeo
   var video = document.querySelector("#webCamera");
@@ -41,7 +33,6 @@ const takeSnapShot = () => {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   var ctx = canvas.getContext('2d');
-  drawPoint(ctx, 200, 200, 1.0, 'black', 1);
 
   //Desenhando e convertendo as dimensões
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -82,20 +73,21 @@ async function app() {
 
 
   while (true) {
-
+    
     const ctx = canvas.getContext('2d');
+    
     model.detect(video_test).then(predictions => {
-      console.log('Predictions: ', predictions) // bbox predictions
       ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
-
+      
       ctx.beginPath();
-      const test = predictions[0] ? predictions[0].bbox : [0,0,560,560];
-
+      const test = predictions[0] ? predictions[0].bbox : [0,0,videoWidth,videoHeight];
+      
       ctx.strokeStyle = 'green';
       if(test.length != 0){
-        ctx.rect(test[0], test[1], test[2], test[3]);
+        radio_improve = 25
+        ctx.rect(test[0]-radio_improve, test[1]-radio_improve, test[2]+radio_improve*2, test[3]+radio_improve*2);
       }
-
+      
       ctx.stroke();
     });
 
