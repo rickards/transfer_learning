@@ -1,9 +1,12 @@
-const videoWidth = 500;
-const videoHeight = 380;
+const videoWidth = 490;
+const videoHeight = 350;
 const video_test = document.getElementById('webCamera');
 video_test.width = videoWidth;
 video_test.height = videoHeight;
 const color = "#FFFF";
+const image_label = document.getElementById('hand');
+
+var n_image = 1
 
 async function setupWebcam() {
   return new Promise((resolve, reject) => {
@@ -22,6 +25,11 @@ async function setupWebcam() {
       reject();
     }
   });
+}
+
+const nextLabel = () => {
+  n_image = n_image + 1
+  image_label.src = "../images/"+n_image+".png"
 }
 
 const takeSnapShot = () => {
@@ -47,12 +55,21 @@ const download = (imageUrl) => {
 
   var link = document.createElement('a');
   link.href = imageUrl;
-  link.download = 'Download.jpg';
+  link.download = "mao_"+n_image+"_"+document.getElementById('input_name').value+".jpg";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
 
+// const next_image_example = () => {
+//   var img = document.createElement("img");
+//   img.src = "../images/2 - Borboleta.png"; //atribuindo a propriedade source da imagem
+//   const canvas = document.getElementById('conf_hand');
+//   console.log(canvas);
+//   var ctx = canvas.getContext("2d");
+//   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+//   ctx.beginPath();
+// }
 
 async function app() {
 
@@ -60,7 +77,7 @@ async function app() {
   const canvas = document.getElementById('output');
   canvas.width = videoWidth;
   canvas.height = videoHeight;
-  console.log(canvas);
+  
   const modelHandTrackParams = {
     flipHorizontal: false,   // flip e.g for video
     imageScaleFactor: 0.7,  // reduce input image size .
@@ -75,22 +92,19 @@ async function app() {
     
     const ctx = canvas.getContext('2d');
     
+    ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
     model.detect(video_test).then(predictions => {
-      ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
-      
-      ctx.beginPath();
-      const test = predictions[0] ? predictions[0].bbox : [0,0,videoWidth,videoHeight];
       
       ctx.strokeStyle = 'green';
-      if(test.length != 0){
-        radio_improve = 25
-        ctx.rect(test[0]-radio_improve, test[1]-radio_improve, test[2]+radio_improve*2, test[3]+radio_improve*2);
-      }
-      
-      ctx.stroke();
-    });
+      ctx.beginPath();
+      const test = predictions[0] ? predictions[0].bbox : [0,0,videoWidth,videoHeight];
 
-    // drawKeypoints(pose.keypoints, minPoseConfidence, ctx);
+      radio_improve = 25
+      ctx.rect(test[0]-radio_improve, test[1]-radio_improve, test[2]+radio_improve*2, test[3]+radio_improve*2);
+      
+    });
+    ctx.stroke();
+
     await tf.nextFrame();
   }
 
