@@ -61,16 +61,6 @@ const download = (imageUrl) => {
   document.body.removeChild(link);
 }
 
-// const next_image_example = () => {
-//   var img = document.createElement("img");
-//   img.src = "../images/2 - Borboleta.png"; //atribuindo a propriedade source da imagem
-//   const canvas = document.getElementById('conf_hand');
-//   console.log(canvas);
-//   var ctx = canvas.getContext("2d");
-//   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-//   ctx.beginPath();
-// }
-
 async function app() {
 
   await setupWebcam();
@@ -87,9 +77,7 @@ async function app() {
   };
   const model = await handTrack.load(modelHandTrackParams);
 
-
-  while (true) {
-    
+  const update = () => {
     const ctx = canvas.getContext('2d');
     
     ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
@@ -105,8 +93,9 @@ async function app() {
     });
     ctx.stroke();
 
-    await tf.nextFrame();
+    requestAnimationFrame(update)
   }
+  update();
 
 }
 
