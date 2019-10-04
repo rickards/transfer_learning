@@ -29,7 +29,7 @@ async function setupWebcam() {
 
 const nextLabel = () => {
   n_image = n_image + 1
-  image_label.src = "../images/"+n_image+".png"
+  image_label.src = "../images/Front/"+n_image+".png"
 }
 
 const takeSnapShot = () => {
