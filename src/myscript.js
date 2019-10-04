@@ -4,7 +4,8 @@ const video_test = document.getElementById('webCamera');
 video_test.width = videoWidth;
 video_test.height = videoHeight;
 const color = "#FFFF";
-const image_label = document.getElementById('hand');
+const image_label_front = document.getElementById('hand_front');
+const image_label_side = document.getElementById('hand_side');
 
 var n_image = 1
 
@@ -29,7 +30,8 @@ async function setupWebcam() {
 
 const nextLabel = () => {
   n_image = n_image + 1
-  image_label.src = "../images/Front/"+n_image+".png"
+  image_label_front.src = "../images/Front/"+n_image+".png"
+  image_label_side.src = "../images/Side/"+n_image+".png"
 }
 
 const takeSnapShot = () => {
@@ -81,6 +83,7 @@ async function app() {
     const ctx = canvas.getContext('2d');
     
     ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
+
     model.detect(video_test).then(predictions => {
       
       ctx.strokeStyle = 'green';
@@ -91,6 +94,7 @@ async function app() {
       ctx.rect(test[0]-radio_improve, test[1]-radio_improve, test[2]+radio_improve*2, test[3]+radio_improve*2);
       
     });
+
     ctx.stroke();
 
     requestAnimationFrame(update)
