@@ -7,72 +7,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  
+
   <script src="https://cdn.jsdelivr.net/npm/handtrackjs/dist/handtrack.min.js"> </script>
   <style>
     body {
       font-family: sans-serif;
       margin: 0;
-    }
-
-    .area {
-      margin: 10px auto;
-      box-shadow: 0 10px 100px #ccc;
-      padding: 20px;
-      box-sizing: border-box;
-      max-width: 500px;
-    }
-
-    .area video {
-      width: 100%;
-      height: auto;
-      background-color: whitesmoke;
-    }
-
-    .area textarea {
-      width: 100%;
-      margin-top: 10px;
-      height: 80px;
-      box-sizing: border-box;
-    }
-
-    .area button {
-      -webkit-appearance: none;
-      width: 100%;
-      box-sizing: border-box;
-      padding: 10px;
-      text-align: center;
-      background-color: #068c84;
-      color: white;
-      text-transform: uppercase;
-      border: 1px solid white;
-      box-shadow: 0 1px 5px #666;
-    }
-
-    .area button:focus {
-      outline: none;
-      background-color: #0989b0;
-    }
-
-    .area img {
-      max-width: 100%;
-      height: auto;
-    }
-
-    .area .caminho-imagem {
-      padding: 5px 10px;
-      border-radius: 3px;
-      background-color: #068c84;
-      text-align: center;
-    }
-
-    .area .caminho-imagem a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .area .caminho-imagem a:hover {
-      color: yellow;
     }
   </style>
 </head>
@@ -80,29 +20,37 @@
 <body>
 <div class="container">
   <h2 style='text-align:center;'>Módulo para coleta de Imagens de treinamento.</h2>
-
   <div class="row justify-content-md-center mt-4">
       <div class="col col-lg-2">
-      Escreva seu nome: 
+      Escreva seu nome:
       </div>
       <div class="col-md-auto">
       <input id='input_name' type="text" value="" />
       </div>
   </div>
-
   <div class="row justify-content-md-center mt-4">
 
-    <div class="col-md-2" style=˜margin:20 auto;˜>
-    Fig 1: Visão Lateral
-    <img id="hand_side" src="../images/Side/1.png" alt="some text" width=200 height=150>
-    Fig 2: Visão Frontal
-    <img id="hand_front" src="../images/Front/1.png" alt="some text" width=200 height=150>
-    Imite a Fig 2, com a palma da mão para frente.
+    <div class="col-md-2 border col-md-2 rounded shadow">
+      <div class="border mt-2">
+        Fig 1: Visão Lateral
+        <img id="hand_side" class="img-fluid" src="../images/Side/1.png" alt="some text" width=200 height=150>
+      </div>
+      <div class="border mt-2">
+        Fig 2: Visão Frontal
+        <img id="hand_front" class="img-fluid" src="../images/Front/1.png" alt="some text" width=200 height=150>
+      </div>
+      Imite a Fig 2, com a palma da mão para frente.
+      <div class="btn-group" role="group" aria-label="Exemplo básico">
+        <button type="button" class="btn btn-secondary" onclick="previousLabel()">Anterior</button>
+        <button type="button" class="btn btn-info" onclick="nextLabel()">Próximo</button>
+      </div>
+      <div class="progress mt-2">
+        <div id="progBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+      </div>
 
-    <button type="button" class="btn btn-success" onclick="nextLabel()">Pular Label</button>
     </div>
 
-    <div class="col-md-auto ml-5">
+    <div class="col-md-auto">
     <video autoplay playsinline style=" -moz-transform: scaleX(-1);
       -o-transform: scaleX(-1);
       -webkit-transform: scaleX(-1);
@@ -110,27 +58,39 @@
       display: none;
       " id="webCamera"></video>
     <canvas id="output" width=490 height=350></canvas>
+      <button type="button" class="btn btn-block btn-primary" onclick="takeSnapShot()">Tirar foto</button>
     </div>
 
-    <div class="col-md-auto">
+    <div class="col-md-auto shadow">
     <canvas id="hand_piece" width='200'></canvas>
     </div>
 
   </div>
 
-  <div class="area">
-
-    <button type="button" onclick="takeSnapShot()">Tirar foto</button>
-
-    <img id="imagemConvertida" />
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="myscript.js"></script>
+</div>
+<div class="modal fade" id="responseModal" tabindex="-1" role="dialog"
+     aria-labelledby="responseModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body">
+        <div id="alertResponse" class="alert alert-danger shadow-lg" role="alert">
+          <div class="row">
+            <div class="col-12">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="col-11"><p id="msgResponse"></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="myscript.js"></script>
 </body>
 
 </html>
