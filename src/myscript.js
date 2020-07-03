@@ -15,7 +15,12 @@ const modelHandTrackParams = {
   scoreThreshold: 0.35,    // confidence threshold for predictions.
 };
 
-var n_image = 1
+function drawPoint(ctx, y, x, r, color) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
 
 async function setupWebcam() {
   return new Promise((resolve, reject) => {
@@ -36,61 +41,39 @@ async function setupWebcam() {
   });
 }
 
-const nextLabel = () => {
-  n_image = n_image + 1
-  image_label_front.src = "../images/Front/" + n_image + ".png"
-  image_label_side.src = "../images/Side/" + n_image + ".png"
-}
-
-const takeSnapShot = () => {
-  //Captura elemento de vídeo
-  var video = document.querySelector("#webCamera");
-
-  //Criando um canvas que vai guardar a imagem temporariamente
-  var canvas = document.createElement('canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  var ctx = canvas.getContext('2d');
-
-  //Desenhando e convertendo as dimensões
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  //Criando o JPG
-  var dataURI = canvas.toDataURL('image/jpeg'); //O resultado é um BASE64 de uma imagem.
-
-  download(dataURI); //Gerar Imagem e Salvar Caminho no Banco
-}
-
-const download = (imageUrl) => {
-
-  var link = document.createElement('a');
-  link.href = imageUrl;
-  link.download = "mao_" + n_image + "_" + document.getElementById('input_name').value + ".jpg";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
 async function app() {
 
   await setupWebcam();
 
-  const model = await handTrack.load(modelHandTrackParams);
+  const mediapipe = await handpose.load();
 
-  let isHandTrackLocked = false;
+  let isThreadLocked = false;
   let lastResult;
-  const useHandTracking = async (video_test) => {
-    if (isHandTrackLocked) return lastResult;
-    isHandTrackLocked = true;
+  const useTracking = async (video_test) => {
+    if (isThreadLocked) return lastResult;
+    isThreadLocked = true;
 
     // Limita a execução do handtrack a 500 milisegundos por vez
     setTimeout(async () => {
-      let test = [0, 0, videoWidth, videoHeight];
-      const predictions = await model.detect(video_test);
-      test = predictions[0] ? predictions[0].bbox : [0, 0, videoWidth, videoHeight];
-      lastResult = test;
-      isHandTrackLocked = false;
-    }, 100);
+
+      const predictions = await mediapipe.estimateHands(video_test);
+      console.log(predictions)
+
+      for (let i = 0; i < predictions.length; i++) {
+        const keypoints = predictions[i].landmarks;
+        lastResult = keypoints;
+   
+        // // Log hand keypoints.
+        // for (let i = 0; i < keypoints.length; i++) {
+        //   const [x, y, z] = keypoints[i];
+        //   console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+        // }
+      }
+
+      // lastResult = predictions;
+
+      isThreadLocked = false;
+    }, 500);
     return lastResult;
   }
 
@@ -103,16 +86,18 @@ async function app() {
 
     ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
 
-    let test = await useHandTracking(video_test);
-    if (test) {
-      ctx.strokeStyle = 'green';
-      ctx.beginPath();
-
-      radio_improve = 25
-      ctx.rect(test[0] - radio_improve, test[1] - radio_improve, test[2] + radio_improve * 2, test[3] + radio_improve * 2);
+    let keypoints = await useTracking(video_test);
+    if (keypoints) {
+      // Log hand keypoints.
+      for (let i = 0; i < keypoints.length; i++) {
+        const [x, y, z] = keypoints[i];
+        // console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+        drawPoint(ctx, y*0.8, x*0.8, 3, 'aqua')
+      }
+      
     }
 
-    ctx.stroke();
+    // ctx.stroke();
 
     requestAnimationFrame(update)
   }
