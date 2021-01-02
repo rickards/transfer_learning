@@ -22,6 +22,13 @@ function drawPoint(ctx, y, x, r, color) {
   ctx.fill();
 }
 
+// Converts canvas to an image
+function convertCanvasToImage(canvas) {
+	var image = new Image();
+  image.src = canvas.toDataURL("image/png");
+	return image;
+}
+
 async function setupWebcam() {
   return new Promise((resolve, reject) => {
     const navigatorAny = navigator;
@@ -57,7 +64,6 @@ async function app() {
     setTimeout(async () => {
 
       const predictions = await mediapipe.estimateHands(video_test);
-      console.log(predictions)
 
       for (let i = 0; i < predictions.length; i++) {
         const keypoints = predictions[i].landmarks;
@@ -73,7 +79,7 @@ async function app() {
       // lastResult = predictions;
 
       isThreadLocked = false;
-    }, 500);
+    }, 100);
     return lastResult;
   }
 
@@ -86,15 +92,31 @@ async function app() {
 
     ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
 
-    let keypoints = await useTracking(video_test);
+    let keypoints = await useTracking(convertCanvasToImage(canvas));
+
     if (keypoints) {
       // Log hand keypoints.
       for (let i = 0; i < keypoints.length; i++) {
         const [x, y, z] = keypoints[i];
         // console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
-        drawPoint(ctx, y*0.8, x*0.8, 3, 'aqua')
+        drawPoint(ctx, y, x, 6, 'red')
       }
-      
+    }
+
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.scale(-1, 1);
+    ctx.drawImage(video_test, 0, 0, videoWidth, videoHeight);
+
+    let keypoints2 = await useTracking(convertCanvasToImage(canvas));
+
+    if (keypoints2) {
+      // Log hand keypoints.
+      for (let i = 0; i < keypoints2.length; i++) {
+        const [x, y, z] = keypoints2[i];
+        // console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+        drawPoint(ctx, y, x, 3, 'aqua')
+      }
     }
 
     // ctx.stroke();
